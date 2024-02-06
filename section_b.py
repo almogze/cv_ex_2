@@ -68,8 +68,8 @@ def get_top_n_points(matrix, n):
 
 # get n corners from both images
 def get_corners(n, image1, image2):
-    h_points_matrix1 = hcd.H_corner(image1, sigma_smooth=1, sigma_neighb=1, k=10, th=200, density_size=10, display=0)
-    h_points_matrix2 = hcd.H_corner(image2, sigma_smooth=1, sigma_neighb=1, k=10, th=200, density_size=10, display=0)
+    h_points_matrix1 = hcd.H_corner(image1, sigma_smooth=1, sigma_neighb=1, k=5, th=100, density_size=3, display=1)
+    h_points_matrix2 = hcd.H_corner(image2, sigma_smooth=1, sigma_neighb=1, k=5, th=100, density_size=3, display=1)
     corners1 = get_top_n_points(h_points_matrix1, n)
     corners2 = get_top_n_points(h_points_matrix2, n)
     corners1 = np.array([(p[1], p[2]) for p in corners1])

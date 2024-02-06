@@ -146,10 +146,10 @@ def H_corner(img, sigma_smooth=1, sigma_neighb=1, k=10, th=400, density_size=10,
     detected_corners = interesting_points(D_maxima)
 
     if display == 1:
-        plot_graph(img, title="The original image")
-        plot_graphs(img1=Ix, img1_title="The derivatives of Ix", img2=Iy, img2_title="The derivatives of Iy")
-        plot_graphs(img1=normalize(D), img1_title="normalized D", img2=normalize(D_th) > 0,
-                    img2_title="normelized D_th")
+        # plot_graph(img, title="The original image")
+        # plot_graphs(img1=Ix, img1_title="The derivatives of Ix", img2=Iy, img2_title="The derivatives of Iy")
+        # plot_graphs(img1=normalize(D), img1_title="normalized D", img2=normalize(D_th) > 0,
+        #             img2_title="normelized D_th")
         plot_overlay(img, "detected_corners", detected_corners)
 
     # return detected_corners
