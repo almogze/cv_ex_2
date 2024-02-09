@@ -139,8 +139,6 @@ def match_patterns_with_grad(image1, image2, patch_size=50, metric=SSD, patch_de
     I_xy_strength_pad_2 = np.pad(I_xy_strength_2, pad_width=patch_size // 2, mode='constant', constant_values=0)
 
     matching_points = []
-    mismatching_points = []
-
     for i, p in enumerate(corners1):
         # get the corners that have approximately the same y value as the current corner
         relevant_im2_corners = corners2[p[0] - y_th <= corners2[:, 0]] if y_th is not None else corners2
@@ -156,16 +154,10 @@ def match_patterns_with_grad(image1, image2, patch_size=50, metric=SSD, patch_de
         metric_result = np.array(metric(patches_1, patches_2))
         # get the index of the minimum/maximum value for the second image up to a threshold
         first_index = np.argmin(metric_result) if metric == SSD else np.argmax(metric_result)
-        first_match = metric_result[first_index]
-        metric_result[first_index] = np.iinfo(np.int32).max if metric == SSD else -np.iinfo(np.int32).max
-        second_index = np.argmin(metric_result) if metric == SSD else np.argmax(metric_result)
-        second_match = metric_result[second_index]
-        q = relevant_im2_corners[first_index]
+        metric_result[first_index] = 100 if metric == SSD else -100
 
-        # check if the ratio between the best and the second best match is greater than 0.8
-        if first_match / second_match > 0.8:
-            mismatching_points.append((p, q))
-            continue
+        q = relevant_im2_corners[first_index]
+        cv2.line(imC, (p[1], p[0]), (q[1] + m, q[0]), (255, 0, 0), 1)
 
         matching_points.append((p, q))
 
@@ -173,7 +165,7 @@ def match_patterns_with_grad(image1, image2, patch_size=50, metric=SSD, patch_de
         plt.imshow(imC)
         plt.show()
 
-    return matching_points, mismatching_points
+    return matching_points
 
 
 # section b
@@ -216,7 +208,7 @@ def match_patterns_with_ratio(image1, image2, patch_size=50, metric=SSD, patch_d
         # get the index of the minimum/maximum value for the second image up to a threshold
         first_index = np.argmin(metric_result) if metric == SSD else np.argmax(metric_result)
         first_match = metric_result[first_index]
-        metric_result[first_index] = np.iinfo(np.uint32).max if metric == SSD else -np.iinfo(np.uint32).max
+        metric_result[first_index] = 100 if metric == SSD else -100
         second_index = np.argmin(metric_result) if metric == SSD else np.argmax(metric_result)
         second_match = metric_result[second_index]
         q = relevant_im2_corners[first_index]
@@ -246,11 +238,11 @@ def match_patterns_with_ratio(image1, image2, patch_size=50, metric=SSD, patch_d
 # Study the differences between the different descriptors and also the use of SSD or NCC.
 # Present examples that demonstrate the effectiveness of using the different descriptors and the different metrics.
 
-# match_patterns_with_grad(img1, img2, patch_size=31, metric=SSD, patch_descriptor=hist_gradient_opt, amount_of_edges=400, y_th=None, display=1)
-# match_patterns_with_grad(img1, img2, patch_size=31, metric=NCC, patch_descriptor=hist_gradient_opt, amount_of_edges=400, y_th=None, display=1)
+match_patterns_with_grad(img1, img2, patch_size=31, metric=SSD, patch_descriptor=hist_gradient_opt, amount_of_edges=400, y_th=None, display=1)
+match_patterns_with_grad(img1, img2, patch_size=31, metric=NCC, patch_descriptor=hist_gradient_opt, amount_of_edges=400, y_th=None, display=1)
 
-# match_patterns_with_grad(img1, img2, patch_size=31, metric=SSD, patch_descriptor=gradient_opt, amount_of_edges=400, y_th=None, display=1)
-# match_patterns_with_grad(img1, img2, patch_size=31, metric=NCC, patch_descriptor=gradient_opt, amount_of_edges=400, y_th=None, display=1)
+match_patterns_with_grad(img1, img2, patch_size=31, metric=SSD, patch_descriptor=gradient_opt, amount_of_edges=400, y_th=None, display=1)
+match_patterns_with_grad(img1, img2, patch_size=31, metric=NCC, patch_descriptor=gradient_opt, amount_of_edges=400, y_th=None, display=1)
 
 # match_patterns(img1, img2, patch_size=31, metric=SSD, patch_descriptor=hist_patch_im, amount_of_edges=400, y_th=None, display=1)
 # match_patterns(img1, img2, patch_size=31, metric=NCC, patch_descriptor=hist_patch_im, amount_of_edges=400, y_th=None, display=1)
@@ -300,4 +292,4 @@ def claus6():
     print(f'Case 4 gradient histogram number of mismatch points: {len(mismatch4_3)}. SSD + no y-coordinate constraint + gradient histogram descriptor')
 
 
-claus6()
+# claus6()
